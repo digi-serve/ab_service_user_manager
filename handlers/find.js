@@ -2,14 +2,30 @@
  * find
  * our Request handler.
  */
-const path = require("path");
-const utils = require(path.join(__dirname, "..", "utils", "utils.js"));
+const utils = require("../utils/utils.js");
 
 module.exports = {
    /**
     * Key: the cote message key we respond to.
     */
    key: "user_manager.find",
+
+   /**
+    * inputValidation
+    * define the expected inputs to this service handler:
+    * Format:
+    * "parameterName" : {
+    *    "required" : {bool},  // default = false
+    *    "validation" : {fn|obj},
+    *                   {fn} a function(value) that returns true/false if
+    *                        the value if valid.
+    *                   {obj}: .type: {string} the data type
+    *                                 [ "string", "uuid", "email", "number", ... ]
+    * }
+    */
+   inputValidation: {
+      uuid: { string: true, optional: true },
+   },
 
    /**
     * fn
@@ -47,32 +63,17 @@ module.exports = {
 
       // get User model
       var User = req.model("User");
-      User.find(cond).then((list) => {
-         if (!list || !list[0]) {
-            cb(null, null);
-         } else {
-            cb(null, utils.safeUser(list[0]));
-         }
-      });
+      User.find(cond)
+         .then((list) => {
+            if (!list || !list[0]) {
+               cb(null, null);
+            } else {
+               cb(null, utils.safeUser(list[0]));
+            }
+         })
+         .catch((error) => {
+            req.log(error);
+            cb(error);
+         });
    },
-
-   /**
-    * inputValidation
-    * define the expected inputs to this service handler:
-    * Format:
-    * "parameterName" : {
-    *    "required" : {bool},  // default = false
-    *    "validation" : {fn|obj},
-    *                   {fn} a function(value) that returns true/false if
-    *                        the value if valid.
-    *                   {obj}: .type: {string} the data type
-    *                                 [ "string", "uuid", "email", "number", ... ]
-    * }
-    */
-   inputValidation: {
-      // uuid: {
-      //    required: true,
-      //    validation: { type: "uuid" }
-      // }
-   }
 };

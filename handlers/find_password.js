@@ -2,14 +2,36 @@
  * find
  * our Request handler.
  */
-const path = require("path");
-const utils = require(path.join(__dirname, "..", "utils", "utils.js"));
+const utils = require("../utils/utils.js");
 
 module.exports = {
    /**
     * Key: the cote message key we respond to.
     */
    key: "user_manager.find.password",
+
+   /**
+    * inputValidation
+    * define the expected inputs to this service handler:
+    * Format:
+    * "parameterName" : {
+    *    {joi.fn}   : {bool},  // performs: joi.{fn}();
+    *    {joi.fn}   : {
+    *       {joi.fn1} : true,   // performs: joi.{fn}().{fn1}();
+    *       {joi.fn2} : { options } // performs: joi.{fn}().{fn2}({options})
+    *    }
+    *    // examples:
+    *    "required" : {bool},  // default = false
+    *
+    *    // custom:
+    *        "validation" : {fn} a function(value, {allValues hash}) that
+    *                       returns { error:{null || {new Error("Error Message")} }, value: {normalize(value)}}
+    * }
+    */
+   inputValidation: {
+      email: { string: { email: true }, required: true },
+      password: { string: true, required: true },
+   },
 
    /**
     * fn
@@ -59,7 +81,7 @@ module.exports = {
          } else {
             utils
                .hash(password, salt)
-               .then(function(hashResult) {
+               .then(function (hashResult) {
                   if (user && hashResult == hashedPassword) {
                      req.log("passwords match");
                      cb(null, utils.safeUser(user));
@@ -82,28 +104,4 @@ module.exports = {
          }
       });
    },
-
-   /**
-    * inputValidation
-    * define the expected inputs to this service handler:
-    * Format:
-    * "parameterName" : {
-    *    "required" : {bool},  // default = false
-    *    "validation" : {fn|obj},
-    *                   {fn} a function(value) that returns true/false if
-    *                        the value if valid.
-    *                   {obj}: .type: {string} the data type
-    *                                 [ "string", "uuid", "email", "number", ... ]
-    * }
-    */
-   inputValidation: {
-      email: {
-         required: true,
-         validation: { type: "email" }
-      },
-      password: {
-         required: true,
-         validation: { type: "string" }
-      }
-   }
 };
