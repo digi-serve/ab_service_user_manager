@@ -12,11 +12,11 @@ module.exports = function (req, username) {
       }
 
       let sql = `
-SELECT * FROM ${tenantDB}\`AB_SYSTEM_ROLE\`
+SELECT * FROM ${tenantDB}\`SITE_ROLE\`
 WHERE \`uuid\` IN (
 	SELECT \`ROLE\` 
-	FROM ${tenantDB}\`AB_JOINMN_ROLE_site_user_siteuser661\` 
-	WHERE \`site_user\` = ?
+	FROM ${tenantDB}\`AB_JOINMN_ROLE_USER_user\` 
+	WHERE \`USER\` = ?
 )`;
 
       req.query(sql, [username], (error, results, fields) => {
