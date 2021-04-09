@@ -82,9 +82,7 @@ module.exports = {
 
             // get User model
             var object = AB.objectUser();
-            object
-               .model()
-               .find(cond)
+            req.retry(() => object.model().find(cond))
                .then((list) => {
                   if (!list || !list[0]) {
                      cb(null, null);
@@ -93,7 +91,7 @@ module.exports = {
                   }
                })
                .catch((error) => {
-                  AB.notify.developer(error, {
+                  req.notify.developer(error, {
                      context: "user_manager.user-find",
                      cond,
                   });
@@ -101,7 +99,11 @@ module.exports = {
                });
          })
          .catch((err) => {
-            req.logError("ERROR:", err);
+            req.notify.developer(err, {
+               context:
+                  "Service:user_manager.user-find: Error initializing ABFactory",
+               req,
+            });
             cb(err);
          });
    },

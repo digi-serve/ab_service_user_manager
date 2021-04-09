@@ -62,8 +62,8 @@ module.exports = {
             var config = req.config();
 
             var User = AB.objectUser();
-            User.model()
-               .find({ email })
+
+            req.retry(() => User.model().find({ email }))
                .then((list) => {
                   var user, salt, hashedPassword;
 
@@ -119,10 +119,23 @@ module.exports = {
                            cb(err);
                         });
                   }
+               })
+               .catch((err) => {
+                  req.notify.developer(err, {
+                     context:
+                        "Service:user_manager.user-find-password: could not find User",
+                     uuid,
+                     req,
+                  });
+                  cb(err);
                });
          })
          .catch((err) => {
-            req.logError("ERROR:", err);
+            req.notify.developer(err, {
+               context:
+                  "Service:user_manager.user-find-password: Error initializing ABFactory",
+               req,
+            });
             cb(err);
          });
    },
