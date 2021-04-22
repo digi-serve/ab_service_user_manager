@@ -104,10 +104,9 @@ module.exports = {
                               if (user) {
                                  // Increment failed login count
                                  user.failedLogins++;
-                                 User.model().update(
-                                    { uuid: user.uuid },
-                                    { failedLogins: user.failedLogins }
-                                 );
+                                 User.model().update(user.uuid, {
+                                    failedLogins: user.failedLogins,
+                                 });
                               }
                            }
                         })
