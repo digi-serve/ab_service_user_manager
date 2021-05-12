@@ -123,8 +123,8 @@ module.exports = {
                   req.notify.developer(err, {
                      context:
                         "Service:user_manager.user-find-password: could not find User",
-                     uuid,
-                     req,
+                     email,
+                     // req,
                   });
                   cb(err);
                });
@@ -133,7 +133,7 @@ module.exports = {
             req.notify.developer(err, {
                context:
                   "Service:user_manager.user-find-password: Error initializing ABFactory",
-               req,
+               // req,
             });
             cb(err);
          });

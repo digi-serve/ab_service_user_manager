@@ -15,7 +15,7 @@ module.exports = function (req, username) {
 SELECT * FROM ${tenantDB}\`SITE_ROLE\`
 WHERE \`uuid\` IN (
 	SELECT \`ROLE\` 
-	FROM ${tenantDB}\`AB_JOINMN_ROLE_USER_user\` 
+	FROM ${tenantDB}\`AB_JOINMN_ROLE_USER_users\` 
 	WHERE \`USER\` = ?
 )`;
 
