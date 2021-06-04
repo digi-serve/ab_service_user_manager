@@ -81,8 +81,9 @@ module.exports = {
             }
 
             // get User model
-            var object = AB.objectUser();
-            req.retry(() => object.model().find(cond))
+            // NOTE: Users need to contain their Roles now:
+            var User = AB.objectUser();
+            req.retry(() => User.model().find({ where: cond, populate: true }))
                .then((list) => {
                   if (!list || !list[0]) {
                      cb(null, null);
