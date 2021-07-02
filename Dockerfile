@@ -1,17 +1,17 @@
 ##
-## digiserve/ab-user-manager:develop
+## digiserve/ab-user-manager:master
 ##
 ## This is our microservice for the users in an AB managed site.
 ##
 ## Docker Commands:
 ## ---------------
-## $ docker build -t digiserve/ab-user-manager:develop .
-## $ docker push digiserve/ab-user-manager:develop
+## $ docker build -t digiserve/ab-user-manager:master .
+## $ docker push digiserve/ab-user-manager:master
 ##
 
-FROM digiserve/service-cli:develop
+FROM digiserve/service-cli:master
 
-RUN git clone --recursive https://github.com/appdevdesigns/ab_service_user_manager.git app && cd app && git checkout develop && git submodule update --recursive && npm install
+RUN git clone --recursive https://github.com/appdevdesigns/ab_service_user_manager.git app && cd app && git submodule update --recursive && npm install
 
 WORKDIR /app
 
