@@ -8,11 +8,11 @@
   "dependencies": {
     "ab-utils": "github:hiro-nakamura/ab-utils",
     "cote": "^1.0.0",
-    "knex": "^0.95.4",
+    "knex": "^0.95.15",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "nanoid": "^3.1.12",
-    "objection": "^2.2.15",
+    "nanoid": "^3.3.1",
+    "objection": "^2.2.18",
     "xml-js": "^1.6.11"
   },
   "scripts": {
