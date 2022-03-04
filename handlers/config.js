@@ -59,7 +59,11 @@ module.exports = {
       sqlFindRolesByUser(req, user.username)
          .then((list) => {
             user.roles = list;
-            req.log("user with roles:", user);
+            req.log(
+               `user[${user.username}] with roles:[${list
+                  .map((l) => l.uuid)
+                  .join(", ")}]`
+            );
             cb(null, user);
          })
          .catch(cb);

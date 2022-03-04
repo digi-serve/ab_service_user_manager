@@ -104,15 +104,10 @@ module.exports = {
 
             var responseURL = `${url}auth/password/reset?a=${token}&t=${req.tenantID()}`;
             var emailDef = {
-               to: [
-                  user.email,
-                  "johnny.r.hausman@gmail.com",
-                  "james@digiserve.org",
-                  "jduncandesign@gmail.com",
-               ],
-               from: "noreply@appdevdesigns.net",
+               to: user.email,
+               from: "no-reply@digiserve.org", // TODO: pull this from somewhere?
                subject: "Test: Reset Password",
-               text: ` (just testing) click to reset password`,
+               text: ` (just testing) visit this url to reset password: http://${responseURL}`,
                html: ` <p> <b>(just testing)</b> click <a href="${responseURL}">here</a> to reset password </p> `,
             };
 
