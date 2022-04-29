@@ -38,6 +38,7 @@ module.exports = {
    inputValidation: {
       email: { string: { email: { allowUnicode: true } }, required: true },
       url: { string: true, required: true },
+      fromService: { string: true, optional: true },
    },
 
    /**
@@ -58,11 +59,12 @@ module.exports = {
 
             req.log(req.param("email"));
             req.log(req.param("url"));
+            req.log(req.param("fromService") || null);
 
             // 1) get User
-            var cond = { email: req.param("email") };
-            var User = AB.objectUser();
-            var list = await req.retry(() =>
+            const cond = { email: req.param("email") };
+            const User = AB.objectUser();
+            const list = await req.retry(() =>
                User.model().find({ where: cond, populate: false })
             );
             if (!list || !list[0]) {
@@ -72,38 +74,47 @@ module.exports = {
                cb(null, { status: "success" });
                return;
             }
-            var user = list[0];
+            const user = list[0];
             req.log(`User Requesting Password Reset: ${user.username}`);
 
             // 2) create new authToken
             //   - authToken table needs to have authToken, user, metadata (for storing route/app specific info)
 
             // https://security.stackexchange.com/questions/94630/token-based-authentication-whats-a-good-token-length
-            var token = await nanoid(16);
+            const token = await nanoid(16);
 
             // store our current request context:
-            var context = {
+            const context = {
                username: user.username,
                email: user.email,
                tenantID: req.tenantID(),
             };
 
             // expires in 10 minutes
-            // var expires = new Date(Date.now() + numMinutes*60000);
-            var expires = new Date(Date.now() + 600000); // <- 10 min
+            // const expires = new Date(Date.now() + numMinutes*60000);
+            const expires = new Date(Date.now() + 600000); // <- 10 min
 
-            var SiteToken = AB.objectToken();
+            const SiteToken = AB.objectToken();
             await req.retry(() =>
                SiteToken.model().create({ token, context, expires })
             );
             req.log("newToken:", token);
 
             // 3) generate email with Auth Link
-            var url = req.param("url");
+            let url = req.param("url");
             if (url[url.length - 1] != "/") url += "/";
 
-            var responseURL = `${url}auth/password/reset?a=${token}&t=${req.tenantID()}`;
-            var emailDef = {
+            const responseURL = `${url}auth/password/reset?a=${token}&t=${req.tenantID()}`;
+
+            const fromService = req.param("fromService") || null;
+
+            if (fromService === "process_manager") {
+               cb(null, { status: "success", data: responseURL });
+
+               return;
+            }
+
+            const emailDef = {
                to: user.email,
                from: "no-reply@digiserve.org", // TODO: pull this from somewhere?
                subject: "Test: Reset Password",
