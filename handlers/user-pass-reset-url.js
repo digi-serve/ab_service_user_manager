@@ -14,7 +14,7 @@ module.exports = {
    /**
     * Key: the cote message key we respond to.
     */
-   key: "user_manager.user-password-reset-request",
+   key: "user_manager.user-password-reset-url",
 
    /**
     * inputValidation
@@ -50,15 +50,14 @@ module.exports = {
     *        a node style callback(err, results) to send data when job is finished
     */
    fn: function handler(req, cb) {
-      req.log("user_manager.user-password-reset-request:");
+      req.log("user_manager.user-password-reset-url:");
 
       // get the AB for the current tenant
       ABBootstrap.init(req)
-         .then(async (AB) => { // eslint-disable-line
+          .then(async (AB) => { // eslint-disable-line
 
             req.log(req.param("email"));
             req.log(req.param("url"));
-            req.log(req.param("fromService") || null);
 
             // 1) get User
             const cond = { email: req.param("email") };
@@ -74,7 +73,7 @@ module.exports = {
                return;
             }
             const user = list[0];
-            req.log(`User Requesting Password Reset: ${user.username}`);
+            req.log(`User Requesting Password Reset Link: ${user.username}`);
 
             // 2) create new authToken
             //   - authToken table needs to have authToken, user, metadata (for storing route/app specific info)
@@ -105,37 +104,12 @@ module.exports = {
 
             const responseURL = `${url}auth/password/reset?a=${token}&t=${req.tenantID()}`;
 
-            const emailDef = {
-               to: user.email,
-               from: "no-reply@digiserve.org", // TODO: pull this from somewhere?
-               subject: "Test: Reset Password",
-               text: ` (just testing) visit this url to reset password: http://${responseURL}`,
-               html: ` <p> <b>(just testing)</b> click <a href="${responseURL}">here</a> to reset password </p> `,
-            };
-
-            req.serviceRequest(
-               "notification_email.email",
-               {
-                  email: emailDef,
-               },
-               (err, results) => {
-                  if (err) {
-                     req.notify.developer(err, {
-                        context:
-                           "Service:user_manager.user-password-reset-request: Error sending email",
-                        emailDef,
-                     });
-                     cb(err);
-                     return;
-                  }
-                  cb(null, { status: "success" });
-               }
-            );
+            cb(null, { status: "success", data: responseURL });
          })
          .catch((err) => {
             req.notify.developer(err, {
                context:
-                  "Service:user_manager.user-password-reset-request: Error initializing ABFactory",
+                  "Service:user_manager.user-password-reset-link: Error initializing ABFactory",
             });
             cb(err);
          });
