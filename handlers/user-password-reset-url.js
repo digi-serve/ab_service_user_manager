@@ -37,7 +37,6 @@ module.exports = {
     */
    inputValidation: {
       email: { string: { email: { allowUnicode: true } }, required: true },
-      url: { string: true, required: true },
    },
 
    /**
@@ -57,7 +56,6 @@ module.exports = {
           .then(async (AB) => { // eslint-disable-line
 
             req.log(req.param("email"));
-            req.log(req.param("url"));
 
             // 1) get User
             const cond = { email: req.param("email") };
@@ -65,6 +63,7 @@ module.exports = {
             const list = await req.retry(() =>
                User.model().find({ where: cond, populate: false })
             );
+
             if (!list || !list[0]) {
                // Q: is there any additional management in this case?
                // eg: do we mark how many failed attempts and then block that browser?
@@ -99,12 +98,29 @@ module.exports = {
             req.log("newToken:", token);
 
             // 3) generate email with Auth Link
-            let url = req.param("url");
-            if (url[url.length - 1] != "/") url += "/";
+            req.serviceRequest(
+               "tenant_manager.tenant-url",
+               {
+                  uuid: req.tenantID(),
+               },
+               (err, results) => {
+                  if (err) {
+                     console.error(err);
 
-            const responseURL = `${url}auth/password/reset?a=${token}&t=${req.tenantID()}`;
+                     cb(err);
+                     return;
+                  }
 
-            cb(null, { status: "success", data: responseURL });
+                  const url =
+                     results.url[results.url.length - 1] != "/"
+                        ? `${results.url}/`
+                        : results.url;
+
+                  const responseURL = `${url}auth/password/reset?a=${token}&t=${req.tenantID()}`;
+
+                  cb(null, { data: responseURL });
+               }
+            );
          })
          .catch((err) => {
             req.notify.developer(err, {
