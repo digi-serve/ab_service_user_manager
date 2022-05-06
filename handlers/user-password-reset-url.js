@@ -68,7 +68,10 @@ module.exports = {
                // Q: is there any additional management in this case?
                // eg: do we mark how many failed attempts and then block that browser?
                req.log("User not found: ", JSON.stringify(cond));
-               cb(null, { status: "success" });
+
+               const error = new Error("E_NOT_FOUND");
+
+               cb(error);
                return;
             }
             const user = list[0];
@@ -105,7 +108,10 @@ module.exports = {
                },
                (err, results) => {
                   if (err) {
-                     console.error(err);
+                     req.notify.developer(err, {
+                        context:
+                           "Service:tenant_manager.tenant-url: Error initializing ABFactory",
+                     });
 
                      cb(err);
                      return;
@@ -125,7 +131,7 @@ module.exports = {
          .catch((err) => {
             req.notify.developer(err, {
                context:
-                  "Service:user_manager.user-password-reset-link: Error initializing ABFactory",
+                  "Service:user_manager.user-password-reset-url: Error initializing ABFactory",
             });
             cb(err);
          });
