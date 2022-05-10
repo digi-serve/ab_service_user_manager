@@ -110,7 +110,7 @@ module.exports = {
                   if (err) {
                      req.notify.developer(err, {
                         context:
-                           "Service:tenant_manager.tenant-url: Error initializing ABFactory",
+                           "Service:tenant_manager.tenant-url: Error requesting tenant-url.",
                      });
 
                      cb(err);
