@@ -69,9 +69,10 @@ module.exports = {
                // eg: do we mark how many failed attempts and then block that browser?
                req.log("User not found: ", JSON.stringify(cond));
 
-               const error = new Error("E_NOT_FOUND");
-
+               const error = new Error(`User not found [${cond.email}]`);
+               error.code = "E_NOT_FOUND";
                cb(error);
+
                return;
             }
             const user = list[0];
