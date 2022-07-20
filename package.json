@@ -8,11 +8,11 @@
   "dependencies": {
     "ab-utils": "github:hiro-nakamura/ab-utils",
     "cote": "^1.0.0",
-    "knex": "^0.95.4",
+    "knex": "^0.95.15",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "nanoid": "^3.1.12",
-    "objection": "^2.2.15",
+    "nanoid": "^3.3.1",
+    "objection": "^2.2.18",
     "xml-js": "^1.6.11"
   },
   "scripts": {
@@ -22,10 +22,11 @@
     "dev": "node_modules/.bin/nodemon --inspect=0.0.0.0:9229 app.js",
     "devBuild": "run-script-os",
     "devInstall": "run-script-os",
-    "devBuild:win32": "docker run -it --mount type=bind,source=%cd%,target=/app -w /app node npm install",
+    "devBuild:win32": "docker run -it --mount type=bind,source=%cd%,target=/app -w /app node /bin/bash -c \"npm i --force && cd AppBuilder && npm i --force\"",
     "devInstall:win32": "docker run -it --mount type=bind,source=%cd%,target=/app -w /app node bash",
-    "devBuild:darwin:linux": "docker run -it --mount type=bind,source=\"$(pwd)\",target=/app -w /app node npm install",
-    "devInstall:darwin:linux": "docker run -it --mount type=bind,source=\"$(pwd)\",target=/app -w /app node bash"
+    "devBuild:darwin:linux": "docker run -it --mount type=bind,source=\"$(pwd)\",target=/app -w /app node /bin/bash -c \"npm i --force && cd AppBuilder && npm i --force\"",
+    "devInstall:darwin:linux": "docker run -it --mount type=bind,source=\"$(pwd)\",target=/app -w /app node bash",
+    "submoduleNPMInstall": "cd AppBuilder && npm i --force"
   },
   "devDependencies": {
     "chai": "^4.2.0",

@@ -83,12 +83,28 @@ module.exports = {
             // get User model
             // NOTE: Users need to contain their Roles now:
             var User = AB.objectUser();
-            req.retry(() => User.model().find({ where: cond, populate: true }))
+            req.retry(() => User.model().find({ where: cond, populate: false }))
                .then((list) => {
                   if (!list || !list[0]) {
                      cb(null, null);
                   } else {
-                     cb(null, utils.safeUser(list[0]));
+                     let user = list[0];
+                     let Role = AB.objectRole();
+                     req.retry(() =>
+                        Role.model().find({
+                           where: { users: [user.username] },
+                           populate: true,
+                        })
+                     )
+                        .then((roles) => {
+                           user.SITE_ROLE = roles.map((r) => {
+                              return { uuid: r.uuid };
+                           });
+                           cb(null, utils.safeUser(user));
+                        })
+                        .catch((err) => {
+                           cb(err, null);
+                        });
                   }
                })
                .catch((error) => {
