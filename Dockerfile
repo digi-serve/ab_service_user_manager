@@ -5,8 +5,8 @@
 ##
 ## Docker Commands:
 ## ---------------
-## $ docker build -t digiserve/ab-user-manager:develop .
-## $ docker push digiserve/ab-user-manager:develop
+## $ docker build -t digiserve/ab-user-manager:master .
+## $ docker push digiserve/ab-user-manager:master
 ##
 
 ARG BRANCH=master
