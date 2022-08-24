@@ -38,6 +38,7 @@ module.exports = {
       uuid: { string: true, optional: true },
       email: { string: { email: true }, optional: true },
       username: { string: true, optional: true },
+      authname: { string: true, optional: true }
    },
 
    /**
@@ -65,6 +66,7 @@ module.exports = {
             const uuid = req.param("uuid");
             const email = req.param("email");
             const username = req.param("username");
+            const authname = req.param("authname");
 
             const cond = {};
             if (uuid) {
@@ -76,10 +78,13 @@ module.exports = {
             if (username) {
                cond.username = username;
             }
+            if (authname) {
+               cond.authname = authname;
+            }
 
             if (Object.keys(cond).length == 0) {
                const error = new Error(
-                  "Must include either uuid, username, or email parameters"
+                  "Must include either uuid, username, authname, or email parameters"
                );
                cb(error);
                return;
