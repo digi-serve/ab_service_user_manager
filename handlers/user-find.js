@@ -37,6 +37,8 @@ module.exports = {
    inputValidation: {
       uuid: { string: true, optional: true },
       email: { string: { email: true }, optional: true },
+      username: { string: true, optional: true },
+      authname: { string: true, optional: true }
    },
 
    /**
@@ -61,20 +63,28 @@ module.exports = {
 
             // Get the passed in parameters
             // Get the passed in parameters
-            var uuid = req.param("uuid");
-            var email = req.param("email");
+            const uuid = req.param("uuid");
+            const email = req.param("email");
+            const username = req.param("username");
+            const authname = req.param("authname");
 
-            var cond = {};
+            const cond = {};
             if (uuid) {
                cond.uuid = uuid;
             }
             if (email) {
                cond.email = email;
             }
+            if (username) {
+               cond.username = username;
+            }
+            if (authname) {
+               cond.authname = authname;
+            }
 
             if (Object.keys(cond).length == 0) {
-               var error = new Error(
-                  "Must include either uuid, or email parameters"
+               const error = new Error(
+                  "Must include either uuid, username, authname, or email parameters"
                );
                cb(error);
                return;
@@ -82,7 +92,7 @@ module.exports = {
 
             // get User model
             // NOTE: Users need to contain their Roles now:
-            var User = AB.objectUser();
+            const User = AB.objectUser();
             req.retry(() => User.model().find({ where: cond, populate: false }))
                .then((list) => {
                   if (!list || !list[0]) {
