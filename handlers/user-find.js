@@ -103,7 +103,7 @@ module.exports = {
                      req.retry(() =>
                         Role.model().find({
                            where: { users: [user.username] },
-                           populate: true,
+                           // populate: true,
                         })
                      )
                         .then((roles) => {
