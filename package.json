@@ -12,7 +12,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "nanoid": "^3.3.1",
-    "objection": "^2.2.18",
+    "objection": "github:Hiro-Nakamura/objection.js#fixDBErrors",
     "xml-js": "^1.6.11"
   },
   "scripts": {
