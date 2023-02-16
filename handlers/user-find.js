@@ -38,7 +38,7 @@ module.exports = {
       uuid: { string: true, optional: true },
       email: { string: { email: true }, optional: true },
       username: { string: true, optional: true },
-      authname: { string: true, optional: true }
+      authname: { string: true, optional: true },
    },
 
    /**
@@ -55,7 +55,7 @@ module.exports = {
 
       // get the AB for the current tenant
       ABBootstrap.init(req)
-         .then((AB) => { // eslint-disable-line
+         .then(async (AB) => { // eslint-disable-line
             // access your config settings if you need them:
             /*
             var config = req.config();
@@ -93,37 +93,35 @@ module.exports = {
             // get User model
             // NOTE: Users need to contain their Roles now:
             const User = AB.objectUser();
-            req.retry(() => User.model().find({ where: cond, populate: false }))
-               .then((list) => {
-                  if (!list || !list[0]) {
-                     cb(null, null);
-                  } else {
-                     let user = list[0];
-                     let Role = AB.objectRole();
-                     req.retry(() =>
-                        Role.model().find({
-                           where: { users: [user.username] },
-                           // populate: true,
-                        })
-                     )
-                        .then((roles) => {
-                           user.SITE_ROLE = roles.map((r) => {
-                              return { uuid: r.uuid };
-                           });
-                           cb(null, utils.safeUser(user));
-                        })
-                        .catch((err) => {
-                           cb(err, null);
-                        });
-                  }
-               })
-               .catch((error) => {
-                  req.notify.developer(error, {
-                     context: "user_manager.user-find",
-                     cond,
+
+            try {
+               const list = await req.retry(() =>
+                  User.model().find({ where: cond, populate: false })
+               );
+               if (!list || !list[0]) {
+                  cb(null, null);
+               } else {
+                  const user = list[0];
+                  const Role = AB.objectRole();
+                  const roles = await req.retry(() =>
+                     Role.model().find({
+                        where: { users: [user.username] },
+                        // populate: true,
+                     })
+                  );
+                  user.SITE_ROLE = roles.map((r) => {
+                     return { uuid: r.uuid };
                   });
-                  cb(error);
+
+                  cb(null, utils.safeUser(user));
+               }
+            } catch (error) {
+               req.notify.developer(error, {
+                  context: "user_manager.user-find",
+                  cond,
                });
+               cb(error);
+            }
          })
          .catch((err) => {
             req.notify.developer(err, {
