@@ -61,7 +61,7 @@ module.exports = {
          const uList = await req.retry(() =>
             User.model().find({
                where: { username: row.context.username },
-               populate: false,
+               populate: ["SITE_ROLE", "SITE_USER"],
             })
          );
          const user = utils.safeUser(uList[0]);

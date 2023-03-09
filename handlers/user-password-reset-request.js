@@ -70,7 +70,7 @@ module.exports = {
                // Q: is there any additional management in this case?
                // eg: do we mark how many failed attempts and then block that browser?
                req.log("User not found: ", JSON.stringify(cond));
-               cb(null, { status: "success" });
+               cb(null, { status: "success", code: "ENOTFOUND" });
                return;
             }
             const user = list[0];

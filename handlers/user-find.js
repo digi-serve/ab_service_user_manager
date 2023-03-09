@@ -37,6 +37,8 @@ module.exports = {
    inputValidation: {
       uuid: { string: true, optional: true },
       email: { string: { email: true }, optional: true },
+      username: { string: true, optional: true },
+      authname: { string: true, optional: true },
    },
 
    /**
@@ -53,7 +55,7 @@ module.exports = {
 
       // get the AB for the current tenant
       ABBootstrap.init(req)
-         .then((AB) => { // eslint-disable-line
+         .then(async (AB) => { // eslint-disable-line
             // access your config settings if you need them:
             /*
             var config = req.config();
@@ -61,20 +63,28 @@ module.exports = {
 
             // Get the passed in parameters
             // Get the passed in parameters
-            var uuid = req.param("uuid");
-            var email = req.param("email");
+            const uuid = req.param("uuid");
+            const email = req.param("email");
+            const username = req.param("username");
+            const authname = req.param("authname");
 
-            var cond = {};
+            const cond = {};
             if (uuid) {
                cond.uuid = uuid;
             }
             if (email) {
                cond.email = email;
             }
+            if (username) {
+               cond.username = username;
+            }
+            if (authname) {
+               cond.authname = authname;
+            }
 
             if (Object.keys(cond).length == 0) {
-               var error = new Error(
-                  "Must include either uuid, or email parameters"
+               const error = new Error(
+                  "Must include either uuid, username, authname, or email parameters"
                );
                cb(error);
                return;
@@ -82,38 +92,36 @@ module.exports = {
 
             // get User model
             // NOTE: Users need to contain their Roles now:
-            var User = AB.objectUser();
-            req.retry(() => User.model().find({ where: cond, populate: false }))
-               .then((list) => {
-                  if (!list || !list[0]) {
-                     cb(null, null);
-                  } else {
-                     let user = list[0];
-                     let Role = AB.objectRole();
-                     req.retry(() =>
-                        Role.model().find({
-                           where: { users: [user.username] },
-                           populate: true,
-                        })
-                     )
-                        .then((roles) => {
-                           user.SITE_ROLE = roles.map((r) => {
-                              return { uuid: r.uuid };
-                           });
-                           cb(null, utils.safeUser(user));
-                        })
-                        .catch((err) => {
-                           cb(err, null);
-                        });
-                  }
-               })
-               .catch((error) => {
-                  req.notify.developer(error, {
-                     context: "user_manager.user-find",
-                     cond,
+            const User = AB.objectUser();
+
+            try {
+               const list = await req.retry(() =>
+                  User.model().find({ where: cond, populate: false })
+               );
+               if (!list || !list[0]) {
+                  cb(null, null);
+               } else {
+                  const user = list[0];
+                  const Role = AB.objectRole();
+                  const roles = await req.retry(() =>
+                     Role.model().find({
+                        where: { users: [user.username] },
+                        // populate: true,
+                     })
+                  );
+                  user.SITE_ROLE = roles.map((r) => {
+                     return { uuid: r.uuid };
                   });
-                  cb(error);
+
+                  cb(null, utils.safeUser(user));
+               }
+            } catch (error) {
+               req.notify.developer(error, {
+                  context: "user_manager.user-find",
+                  cond,
                });
+               cb(error);
+            }
          })
          .catch((err) => {
             req.notify.developer(err, {
