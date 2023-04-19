@@ -2,7 +2,7 @@
 // user_manager
 // (AppBuilder) A microservice for managing Users
 //
-const AB = require("ab-utils");
+const AB = require("@digiserve/ab-utils");
 
 var controller = AB.controller("user_manager");
 // controller.afterStartup((cb)=>{ return cb(/* err */) });
