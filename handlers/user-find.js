@@ -127,7 +127,6 @@ module.exports = {
             req.notify.developer(err, {
                context:
                   "Service:user_manager.user-find: Error initializing ABFactory",
-               req,
             });
             cb(err);
          });
