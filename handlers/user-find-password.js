@@ -63,6 +63,7 @@ module.exports = {
 
             var User = AB.objectUser();
 
+            req.emit("status", "finding user account");
             req.retry(() => User.model().find({ email }))
                .then((list) => {
                   var user, salt, hashedPassword;
@@ -88,6 +89,7 @@ module.exports = {
                      errorFailedAttempts.code = "EFAILEDATTEMPTS";
                      cb(errorFailedAttempts);
                   } else {
+                     req.emit("status", "hashing password");
                      utils
                         .hash(password, salt)
                         .then(function (hashResult) {
