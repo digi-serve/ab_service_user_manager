@@ -1,6 +1,7 @@
 /**
  * config-meta
- * our Request handler.
+ * Returns all the Roles, Scopes, and User information needed for a Site's
+ * configuration.
  */
 
 const ABBootstrap = require("../AppBuilder/ABBootstrap");
