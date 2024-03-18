@@ -32,7 +32,7 @@ module.exports = {
             return cb();
          }
 
-         const userVersionCache = AB.cache("user-version");
+         const userVersionCache = AB.cache("user-version") ?? {};
          delete userVersionCache[user];
          AB.cache("user-version", userVersionCache);
          cb();

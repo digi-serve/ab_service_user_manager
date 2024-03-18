@@ -46,7 +46,7 @@ module.exports = {
       req.log("user_manager.config-user-version()");
       try {
          const AB = await ABBootstrap.init(req);
-         const CacheVersion = AB.cache("user-version");
+         const CacheVersion = AB.cache("user-version") ?? {};
          let user = req.param("user");
          let version = CacheVersion[user.uuid];
          if (!version) {
