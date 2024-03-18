@@ -1,13 +1,10 @@
 /**
- * config-site-verstion
- * return the bootstrap version information needed for the given tenant.
+ * config-user-version
+ * return the bootstrap version information needed for the given user.
  */
 
+const ABBootstrap = require("../AppBuilder/ABBootstrap.js");
 const UMConfig = require("./config.js");
-
-var CacheVersion = {
-   /* userID : "config version hash" */
-};
 
 /**
  * @function hashCode()
@@ -33,24 +30,6 @@ module.exports = {
     */
    key: "user_manager.config-user-version",
 
-   /**
-    * inputValidation
-    * define the expected inputs to this service handler:
-    * Format:
-    * "parameterName" : {
-    *    {joi.fn}   : {bool},  // performs: joi.{fn}();
-    *    {joi.fn}   : {
-    *       {joi.fn1} : true,   // performs: joi.{fn}().{fn1}();
-    *       {joi.fn2} : { options } // performs: joi.{fn}().{fn2}({options})
-    *    }
-    *    // examples:
-    *    "required" : {bool},  // default = false
-    *
-    *    // custom:
-    *        "validation" : {fn} a function(value, {allValues hash}) that
-    *                       returns { error:{null || {new Error("Error Message")} }, value: {normalize(value)}}
-    * }
-    */
    inputValidation: {
       user: { object: true, required: true },
    },
@@ -66,6 +45,8 @@ module.exports = {
    fn: async function handler(req, cb) {
       req.log("user_manager.config-user-version()");
       try {
+         const AB = await ABBootstrap.init(req);
+         const CacheVersion = AB.cache("user-version");
          let user = req.param("user");
          let version = CacheVersion[user.uuid];
          if (!version) {
@@ -77,6 +58,7 @@ module.exports = {
                   }
                   version = new String(hashCode(result)).toString();
                   CacheVersion[user.uuid] = version;
+                  AB.cache("user-version", CacheVersion);
                   resolve();
                });
             });
