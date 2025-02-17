@@ -1,6 +1,6 @@
 {
   "name": "user_manager",
-  "version": "1.1.66+p10448.c20409",
+  "version": "1.1.67+p10449.c20500",
   "description": "(AppBuilder) A microservice for managing Users",
   "main": "app.js",
   "author": "Johnny Hausman",
@@ -13,7 +13,7 @@
     "moment": "^2.29.1",
     "nanoid": "^3.3.1",
     "objection": "github:Hiro-Nakamura/objection.js#fixDBErrors",
-    "semver": "^7.7.0",
+    "semver": "^7.7.1",
     "xml-js": "^1.6.11"
   },
   "scripts": {
