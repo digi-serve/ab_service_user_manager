@@ -1,6 +1,6 @@
-[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/digi-serve/ab_service_user_manager/pr-merge-release.yml?logo=github&label=Build%20%26%20Test)](https://github.com/digi-serve/ab_service_user_manager/actions/workflows/pr-merge-release.yml)
-[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/digi-serve/ab_service_user_manager?logo=github&label=Latest%20Version)
-](https://github.com/digi-serve/ab_service_user_manager/releases)
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/CruGlobal/ab_service_user_manager/pr-merge-release.yml?logo=github&label=Build%20%26%20Test)](https://github.com/CruGlobal/ab_service_user_manager/actions/workflows/pr-merge-release.yml)
+[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/CruGlobal/ab_service_user_manager?logo=github&label=Latest%20Version)
+](https://github.com/CruGlobal/ab_service_user_manager/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/digiserve/ab-user-manager?logo=docker&logoColor=white&label=Docker%20Pulls)](https://hub.docker.com/r/digiserve/ab-user-manager)
 [![Image Size](https://img.shields.io/docker/image-size/digiserve/ab-user-manager/master?logo=docker&logoColor=white&label=Image%20Size)](https://hub.docker.com/r/digiserve/ab-user-manager/tags)
 
@@ -8,7 +8,7 @@
 An AppBuilder service for managing Users.
 
 ## Install
-See [ab_cli](https://github.com/digi-serve/ab-cli)
+See [ab_cli](https://github.com/CruGlobal/ab-cli)
 
 ## Pull Requests
 Pull Requests should be tagged with a label `major`, `minor` or `patch`. Use `major` for breaking changes, `minor` for new features, or `patch` for bug fixes. To merge without creating a release a `skip-release` tag can be added instead.
